@@ -33,7 +33,7 @@ def search_reddit(inputname):
     content_img = []
     content_video = []
 
-    url = f"https://www.reddit.com/search/?q={inputname}"
+    url = f"https://www.reddit.com/search/?q={inputname}&t={time}"
     driver = webdriver.Chrome(options=options)
     driver.get(url)
     
