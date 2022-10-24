@@ -24,7 +24,7 @@ options.add_argument(f'user-agent={user_agent}')
 options.add_argument('--disable-gpu')# Google:規避bug
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
-def search_reddit(inputname):
+def search_reddit(inputname, time):
     address_list = []
     url_list = []
     title_list = []
