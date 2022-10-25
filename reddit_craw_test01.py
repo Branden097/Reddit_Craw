@@ -119,15 +119,15 @@ def search_reddit(inputname, exe_time):
     d = {}
     d['title'] = title_list
     d['url'] = url_list
-    '''
     d['time'] = time_list
+    '''
     d['content_url'] = content_url
     d['content_img'] = content_img
     d['content_video'] = content_video
     '''
     df = pd.DataFrame(d)
-    # print(df)
-    df.to_excel(inputname+'_content'+ datetime_format +'.xlsx', encoding="utf_8_sig")
+    print(df)
+    # df.to_excel(inputname+'_content'+ datetime_format +'.xlsx', encoding="utf_8_sig")
 
-search_reddit('Andy Lyon', 'week')
+search_reddit('Andy Lyon', 'day')
 # search_reddit('Injury')
