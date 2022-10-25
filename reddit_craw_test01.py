@@ -17,7 +17,8 @@ import openpyxl
 
 #程式執行時間戳
 loc_dt = datetime.date.today() 
-datetime_format = loc_dt.strftime("%Y/%m/%d")
+datetime_format_0 = loc_dt.strftime("%Y/%m/%d")
+datetime_format = datetime_format_0.replace('/', '-')
 
 ua = UserAgent()
 user_agent = ua.random
