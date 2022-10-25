@@ -2,7 +2,9 @@ from bs4 import BeautifulSoup as bs
 import requests
 import lxml
 import time
+import datetime
 from selenium import webdriver
+import chromedriver_autoinstaller #自動安裝驅動器
 from selenium.webdriver.common.keys import Keys #模擬鍵盤上按鍵(以下3個)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -12,8 +14,10 @@ from selenium.webdriver import ActionChains
 import pandas as pd
 import random
 import openpyxl
-from datetime import datetime, timedelta
 
+#程式執行時間戳
+loc_dt = datetime.date.today() 
+datetime_format = loc_dt.strftime("%Y/%m/%d")
 
 ua = UserAgent()
 user_agent = ua.random
@@ -23,8 +27,9 @@ options = Options()
 options.add_argument(f'user-agent={user_agent}')
 options.add_argument('--disable-gpu')# Google:規避bug
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
+chromedriver_autoinstaller.install()
 
-def search_reddit(inputname, time):
+def search_reddit(inputname, exe_time):
     address_list = []
     url_list = []
     title_list = []
@@ -33,11 +38,12 @@ def search_reddit(inputname, time):
     content_img = []
     content_video = []
 
-    url = f"https://www.reddit.com/search/?q={inputname}&t={time}"
+    url = f"https://www.reddit.com/search/?q={inputname}&t={exe_time}"
     driver = webdriver.Chrome(options=options)
     driver.get(url)
     
     time.sleep(5)
+
     js = " return action=document.body.scrollHeight " #初始化現在滾動條所在高度為0 
     height = 0#當前窗口總高度
     new_height = driver.execute_script(js)
@@ -74,13 +80,13 @@ def search_reddit(inputname, time):
         url_list.append(str(url))#文章網址
 
         unix_time = res2[0]['data']['children'][0]['data']['created']# 時間
-        real_time = datetime.fromtimestamp(unix_time)
+        real_time = datetime.datetime.fromtimestamp(unix_time)
         time_list.append(str(real_time))
 
         # 標題
         for i in soup.select(f'#t3_{id} ._29WrubtjAcKqzJSPdQqQ4h ._eYtD2XCVieq6emjKBH3m'):
             title_list.append(i.text.replace('\n',' '))
-
+        '''
         # 文章
         # for i in soup.select(f'#t3_{id} ._1qeIAgB0cPwnLhDF9XSiJM'):
         #     content_list.append(i.text)
@@ -108,17 +114,20 @@ def search_reddit(inputname, time):
                 content_video.append(i.select_one('source').get('src'))
         else:
             content_video.append('None')
+        '''
 
     d = {}
     d['title'] = title_list
     d['url'] = url_list
+    '''
     d['time'] = time_list
     d['content_url'] = content_url
     d['content_img'] = content_img
     d['content_video'] = content_video
+    '''
     df = pd.DataFrame(d)
     # print(df)
-    df.to_excel(inputname+'_content.xlsx', encoding="utf_8_sig")
+    df.to_excel(inputname+'_content'+ datetime_format +'.xlsx', encoding="utf_8_sig")
 
-search_reddit('Andy Lyon')
-search_reddit('Injury')
+search_reddit('Andy Lyon', 'week')
+# search_reddit('Injury')
